@@ -1,10 +1,10 @@
 import {createSlice, configureStore} from '@reduxjs/toolkit';
 
-const initialState = { counter: 0, showState: true};
+const initialCounterState = { counter: 0, showCounter: true};
 
 const counterSlices = createSlice({
        name: 'counter',
-       initialState,
+       initialState: initialCounterState,
        reducers: {
         increment(state) {
             state.counter++;
@@ -13,55 +13,38 @@ const counterSlices = createSlice({
             state.counter--;
         },
         increase(state, action) {
-            state.counter = state.counter+action.amount;
+            state.counter = state.counter + action.payload;
         },  
         toggleCounter(state) {
-            state.showCounter = ! state.showCounter 
+            state.showCounter = !state.showCounter 
         },
        }
 });
 
-const counterReducer = (state= initialState, action) => {
+const initialAuthState = { isAuthenticated: false };
 
-    if( action.type === 'increment'){
-        return {
-            counter: state.counter + 1,
-            showState: state.showState
-        };
+const AuthSlices = createSlice({
+    name: 'authentication',
+    initialState: initialAuthState,
+    reducers: {
+        login(state) {
+            state.isAuthenticated = true;
+        },
+        logout(state) {
+            state.isAuthenticated = false;
+        },
     }
-
-    if(action.type === 'increase'){
-        return {
-            counter: state.counter + action.payload,
-            showState: state.showState
-        };
-    }
-
-    if(action.type === 'decrement'){
-        return {
-            counter: state.counter - 1,
-            showState: state.showState
-        };
-    }
-
-    if(action.type === 'toggle'){
-        console.log(!state.showState);
-        
-        return {
-            counter: state.counter,
-            showState: !state.showState
-        };
-    }
-
-    return state;
-};
-
+});
 
 const store = configureStore({
-    reducer: counterSlices.reducer
+    reducer: {
+        counter: counterSlices.reducer,
+        auth: AuthSlices.reducer
+    }
 });
 
 export const counterActions = counterSlices.actions;
+export const authActions = AuthSlices.actions;
 
 
 export default store;
